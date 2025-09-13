@@ -76,5 +76,14 @@ public Student findbyemail(String email) {
             student.setPhoneNumber(PhoneNumber);
         }
     }
+public void deleteStudent (long id){
+    if(studentRepo.findStudentById(id).isPresent()){
+        studentRepo.deleteById(id);
+    } else {
+        throw new IllegalStateException("Student with id "+id+" does not exist");
+    }
+}
+
+
 
 }
