@@ -50,9 +50,7 @@ public Student findbyemail(String email) {
         }
         studentRepo.deleteById(id);
     }
-    public boolean isValidStringUpdate(String oldString , String newString) {
-        return newString != null && newString.length() > 0 && !newString.equals(oldString);
-    }
+    
     @Transactional
     public void updateStudent(Long id, String FirstName, String LastName, String email, String Address, String PhoneNumber) {
         Student student = studentRepo.findById(id).orElseThrow(()-> new IllegalStateException("Student with id "+id+" does not exist"));
