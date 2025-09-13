@@ -12,7 +12,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import java.time.LocalDate;
 import java.time.Period;
 
 
@@ -26,7 +25,8 @@ public class Student {
 @SequenceGenerator(
         name = "student_sequence",
         sequenceName = "student_sequence",
-        allocationSize = 1
+        allocationSize = 1,
+        initialValue = 250001
 )
 @GeneratedValue(
         strategy = GenerationType.SEQUENCE,
@@ -66,9 +66,15 @@ private String email;
 @Column(nullable = false)
     private LocalDate DateOfBirth;
 
+@NotBlank(message="Phone number is mandatory")
+@Column(nullable = false, unique = true)
+@Pattern(
+    regexp = "^[23][0-9]{13}$",
+    message = "National ID must be 14 digits and start with 2 or 3"
+)
+   private String NationalID;
    @Transient
    private Integer age;
-// ...existing code...
 
   
     public String getFirstName() {
@@ -123,17 +129,30 @@ private String email;
         return Period.between(this.DateOfBirth, LocalDate.now()).getYears();
 
     }
+public String getNationalID() {
+    return NationalID; 
+}
+public void setNationalID(String nationalID) {
+    this.NationalID = nationalID;
+}
 
-
-
-    public Student( String FirstName, String LastName, String email, String Address, String PhoneNumber, LocalDate DateOfBirth) {
-        this.FirstName = FirstName;
-        this.LastName = LastName;
+    public Student(
+        String firstName,
+        String lastName,
+        String email,
+        String address,
+        String phoneNumber,
+        LocalDate dateOfBirth,
+        String nationalID
+    ) {
+        this.FirstName = firstName;
+        this.LastName = lastName;
         this.email = email;
-        this.Address = Address;
-        this.PhoneNumber = PhoneNumber;
-        this.DateOfBirth = DateOfBirth;
+        this.Address = address;
+        this.PhoneNumber = phoneNumber;
+        this.DateOfBirth = dateOfBirth;
+        this.NationalID = nationalID;
     }
 
-    
+
 }
