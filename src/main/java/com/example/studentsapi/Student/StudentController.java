@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -42,7 +45,7 @@ public Student nationalIdSearch(@PathVariable("NationalID") String NationalID) {
     return studentService.findbynationalid(NationalID); 
 }
 @PostMapping
-public void registerStudent(@RequestBody Student student){
+public void registerStudent(@Valid @RequestBody Student student){
 studentService.addNewStudent(student);
 
 }
