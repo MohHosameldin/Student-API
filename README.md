@@ -18,7 +18,7 @@ The API delivers the fundamental CRUD (Create, Read, Update, Delete) operations 
 The API is built to be a viable product, not just a prototype, due to the following:
 
 - **Persistent Storage**: Connects to a PostgreSQL database to ensure student data is saved permanently and persists across application restarts.
-- **Direct Data Access**: Exposes clear and predictable API endpoints (e.g., `/api/v1/students`) for seamless integration with other applications.
+- **Direct Data Access**: Exposes clear and predictable API endpoints (e.g., `/api/students`) for seamless integration with other applications.
 - **Basic Data Integrity**: Includes server-side validation to ensure critical fields, such as names and emails, are present and correctly formatted.
 
 ## Getting Started
@@ -34,7 +34,7 @@ The API is built to be a viable product, not just a prototype, due to the follow
 
 3. **Running the API**:
    - Start the server: Follow the project-specific instructions (e.g., `npm start` or `python app.py`).
-   - The API will be available at `http://localhost:3000/api/v1/students` (or the configured port).
+   - The API will be available at `http://localhost:3000/api/students` (or the configured port).
 
 ## API Endpoints
 | Method | Endpoint                        | Description                          |
