@@ -153,6 +153,18 @@ public void setNationalID(String nationalID) {
         this.DateOfBirth = dateOfBirth;
         this.NationalID = nationalID;
     }
-
-
+@Override
+public String toString() {
+return "Student{" +
+        "id=" + id +
+        ", FirstName='" + FirstName + '\'' +
+        ", LastName='" + LastName + '\'' +
+        ", email='" + email + '\'' +
+        ", Address='" + Address + '\'' +
+        ", PhoneNumber='" + PhoneNumber + '\'' +
+        ", DateOfBirth=" + DateOfBirth +
+        ", NationalID='" + NationalID + '\'' +
+        '}';
 }
+} 
+

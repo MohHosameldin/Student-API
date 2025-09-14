@@ -52,8 +52,13 @@ public void deleteStudent(@PathVariable("id") Long id){
 }
 
 @PutMapping(path="{id}") 
-public void updateStudent(@PathVariable("id")Long id , @RequestParam String firstName , @RequestParam String secondName , @RequestParam String email , @RequestParam String Address , @RequestParam String PhoneNumber){
-
+public void updateStudent(@PathVariable("id")Long id ,
+ @RequestParam(required = false) String firstName ,
+  @RequestParam(required = false) String secondName , 
+  @RequestParam(required = false) String email , 
+  @RequestParam(required = false) String Address ,
+  @RequestParam(required = false) String PhoneNumber){
+studentService.updateStudent(id, firstName, secondName, email, Address, PhoneNumber);
 }
 
 }
