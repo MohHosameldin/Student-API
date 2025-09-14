@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface StudentRepo extends JpaRepository<Student, Long> {
 Optional<Student> findStudentByEmail(String email);
 Optional<Student> findStudentById(Long id);
-Optional<Student> findStudentByPhoneNumber(String PhoneNumber);
-Optional<Student> findStudentByNationalID(String NationalID);
+Optional<Student> findStudentByPhoneNumber(String phoneNumber);
+Optional<Student> findStudentByNationalID(String nationalID);
 }
