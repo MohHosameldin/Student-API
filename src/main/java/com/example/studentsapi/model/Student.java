@@ -1,4 +1,4 @@
-package com.example.studentsapi.Student;
+package com.example.studentsapi.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
