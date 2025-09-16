@@ -48,7 +48,9 @@ public Student findbyemail(String email) {
         if(studentRepo.findStudentByNationalID(student.getNationalID()).isPresent()){
             throw new DuplicationException("National ID already taken");
         }
-        studentRepo.save(student);
+        
+            studentRepo.save(student);
+        
     }
     public void deleteStudent(Long id) {
         if(!studentRepo.existsById(id)){

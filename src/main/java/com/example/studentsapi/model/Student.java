@@ -43,9 +43,9 @@ public class Student {
     @Column(nullable = false)
     private String address; 
     @Pattern(
-            regexp = "^[0-9]{10,15}$",
-            message = "Phone number must contain only digits (10–15 digits)"
-    )
+        regexp = "^01[0-9]{9}$",
+        message = "Phone number must be 11 digits and start with 01"
+)
     @NotBlank(message="Phone number is mandatory")
     @Column(nullable = false, unique = true)
     private String phoneNumber; 
