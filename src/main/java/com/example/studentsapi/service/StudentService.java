@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import   org.springframework.transaction.annotation.Transactional;
 
+import com.example.studentsapi.exceptions.DuplicationException;
+import com.example.studentsapi.exceptions.NullException;
+import com.example.studentsapi.exceptions.RecordNotFound;
 import com.example.studentsapi.model.Student;
 import com.example.studentsapi.repository.StudentRepo;
 
@@ -22,41 +25,41 @@ public class StudentService {
     }
     
     public Student findbyid(Long id) {
-        return studentRepo.findStudentById(id).orElseThrow(()-> new IllegalStateException("Student with id "+id+" does not exist"));
+        return studentRepo.findStudentById(id).orElseThrow(()-> new RecordNotFound("Student with id "+id+" does not exist"));
     }
 public Student findbyemail(String email) {
-        return studentRepo.findStudentByEmail(email).orElseThrow(()-> new IllegalStateException("Student with email "+email+" does not exist"));
+        return studentRepo.findStudentByEmail(email).orElseThrow(()-> new RecordNotFound("Student with email "+email+" does not exist"));
     }
     public Student findbynationalid(String NationalID) {
-        return studentRepo.findStudentByNationalID(NationalID).orElseThrow(()-> new IllegalStateException("Student with National ID "+NationalID+" does not exist"));
+        return studentRepo.findStudentByNationalID(NationalID).orElseThrow(()-> new RecordNotFound("Student with National ID "+NationalID+" does not exist"));
     }
 
 
     public void addNewStudent(Student student) {
          if (student == null) {
-        throw new IllegalArgumentException("Student cannot be null");
+        throw new NullException("Student cannot be null");
     }
         if(studentRepo.findStudentByEmail(student.getEmail()).isPresent()){
-            throw new IllegalStateException("Email already taken");
+            throw new DuplicationException("Email already taken");
         }
         if(studentRepo.findStudentByPhoneNumber(student.getPhoneNumber()).isPresent()){
-            throw new IllegalStateException("Phone number already taken");
+            throw new DuplicationException("Phone number already taken");
         }
         if(studentRepo.findStudentByNationalID(student.getNationalID()).isPresent()){
-            throw new IllegalStateException("National ID already taken");
+            throw new DuplicationException("National ID already taken");
         }
         studentRepo.save(student);
     }
     public void deleteStudent(Long id) {
         if(!studentRepo.existsById(id)){
-            throw new IllegalStateException("Student with id "+id+" does not exist");
+            throw new RecordNotFound("Student with id "+id+" does not exist");
         }
         studentRepo.deleteById(id);
     }
     
     @Transactional
     public void updateStudent(Long id, String FirstName, String LastName, String email, String Address, String PhoneNumber) {
-        Student student = studentRepo.findById(id).orElseThrow(()-> new IllegalStateException("Student with id "+id+" does not exist"));
+        Student student = studentRepo.findById(id).orElseThrow(()-> new RecordNotFound("Student with id "+id+" does not exist"));
         if(FirstName != null && FirstName.length()>0 && !FirstName.equals(student.getFirstName())){
             student.setFirstName(FirstName);
         }
@@ -65,7 +68,7 @@ public Student findbyemail(String email) {
         }
         if(email != null && email.length()>0 && !email.equals(student.getEmail())){
             if(studentRepo.findStudentByEmail(email).isPresent()){
-                throw new IllegalStateException("Email already taken");
+                throw new DuplicationException("Email already taken");
             }
             student.setEmail(email);
         }
@@ -74,7 +77,7 @@ public Student findbyemail(String email) {
         }
         if(PhoneNumber != null && PhoneNumber.length()>0 && !PhoneNumber.equals(student.getPhoneNumber())){
             if(studentRepo.findStudentByPhoneNumber(PhoneNumber).isPresent()){
-                throw new IllegalStateException("Phone number already taken");
+                throw new DuplicationException("Phone number already taken");
             }
             student.setPhoneNumber(PhoneNumber);
         }

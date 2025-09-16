@@ -5,8 +5,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-
+@ControllerAdvice
 public class CustomErrorAttributes extends DefaultErrorAttributes {
 
     @Override
