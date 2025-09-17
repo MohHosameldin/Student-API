@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@RequestMapping(path = "api/student")
+@RequestMapping(path = "api/v1/student")
 @CrossOrigin(origins = "*")
 public class StudentController {
 private final StudentService studentService;
