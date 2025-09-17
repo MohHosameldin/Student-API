@@ -1,45 +1,52 @@
 package com.example.studentsapi.security;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-
-
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
-private final PasswordEncoder passwordEncoder;
+@EnableMethodSecurity
+public class ApplicationSecurityConfig {
 
+  
 
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-http.authorizeRequests().antMatchers("/","/index","/css/*","/js/*").permitAll()
-.anyRequest().authenticated().and().httpBasic();
-    }
-
-    @Override
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails anna = User.builder().username("anna").password(passwordEncoder.encode("password")).roles("STUDENT").build();
-        UserDetails annaSmith = User.builder()
-                .username("annasmith")
-                .password(passwordEncoder.encode("password")) 
-                .roles("STUDENT")
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/index", "/css/*", "/js/*").permitAll()
+                .anyRequest().authenticated()
+            )
+            .httpBasic(Customizer.withDefaults());
+        return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails adminUser = User.builder()
+                .username("admin")
+                .password(passwordEncoder.encode("password123"))
+                .roles(ApplicationUserRole.ADMIN.name())
+                .build();
+
+        UserDetails studentUser = User.builder()
+                .username("student")
+                .password(passwordEncoder.encode("password123"))
+                .roles(ApplicationUserRole.STUDENT.name())
                 .build();
         
-        return new InMemoryUserDetailsManager(annaSmith,
-anna        );
+        return new InMemoryUserDetailsManager(adminUser, studentUser);
     }
-    
-
 }

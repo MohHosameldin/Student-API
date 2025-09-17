@@ -16,7 +16,6 @@ import com.example.studentsapi.repository.StudentRepo;
 @Service
 public class StudentService {
     private final StudentRepo studentRepo;
-    @Autowired
     public StudentService(StudentRepo studentRepo) {
         this.studentRepo = studentRepo;
     }
