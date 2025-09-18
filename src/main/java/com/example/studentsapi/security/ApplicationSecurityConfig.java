@@ -27,7 +27,7 @@ public class ApplicationSecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/index", "/css/*", "/js/*").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .httpBasic(Customizer.withDefaults());
         return http.build();
@@ -36,13 +36,13 @@ public class ApplicationSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         UserDetails adminUser = User.builder()
-                .username("admin")
+                .username("linda")
                 .password(passwordEncoder.encode("password123"))
                 .roles(ApplicationUserRole.ADMIN.name())
                 .build();
 
         UserDetails studentUser = User.builder()
-                .username("student")
+                .username("annasmith")
                 .password(passwordEncoder.encode("password123"))
                 .roles(ApplicationUserRole.STUDENT.name())
                 .build();
