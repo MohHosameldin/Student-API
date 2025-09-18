@@ -26,8 +26,8 @@ public class ApplicationSecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index", "/css/*", "/js/*").permitAll()
-                .anyRequest().permitAll()
+                .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll().requestMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())
+                .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());
         return http.build();
