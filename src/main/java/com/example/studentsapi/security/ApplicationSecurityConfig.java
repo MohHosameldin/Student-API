@@ -22,16 +22,23 @@ public class ApplicationSecurityConfig {
   
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll().requestMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())
-                .anyRequest().authenticated()
-            )
-            .httpBasic(Customizer.withDefaults());
-        return http.build();
-    }
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            // RULE 1 (Most Specific): Secure your API.
+            // Any URL starting with /api/ requires the user to have the STUDENT role.
+            .requestMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())
+
+            // RULE 2: Make static content and the homepage public.
+            .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
+
+            // RULE 3 (Least Specific): Any other request not matched above must be authenticated.
+            .anyRequest().authenticated()
+        )
+        .httpBasic(Customizer.withDefaults());
+    return http.build();
+}
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
@@ -46,7 +53,12 @@ public class ApplicationSecurityConfig {
                 .password(passwordEncoder.encode("password123"))
                 .roles(ApplicationUserRole.STUDENT.name())
                 .build();
+                UserDetails Tom = User.builder()
+                .username("Tom")
+                .password(passwordEncoder.encode("password123"))
+                .roles(ApplicationUserRole.STUDENT.name())
+                .build();
         
-        return new InMemoryUserDetailsManager(adminUser, studentUser);
+        return new InMemoryUserDetailsManager(adminUser, studentUser,Tom);
     }
 }
