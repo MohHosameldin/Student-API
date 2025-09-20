@@ -2,6 +2,7 @@ package com.example.studentsapi.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,20 +27,19 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            // RULE 1 (Most Specific): Secure your API.
-            // Any URL starting with /api/ requires the user to have the STUDENT role.
+        .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
+        .requestMatchers(HttpMethod.POST,"/api/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
+                .requestMatchers(HttpMethod.PUT,"/api/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
+
             .requestMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())
 
-            // RULE 2: Make static content and the homepage public.
             .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
 
-            // RULE 3 (Least Specific): Any other request not matched above must be authenticated.
             .anyRequest().authenticated()
         )
         .httpBasic(Customizer.withDefaults());
     return http.build();
 }
-
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         UserDetails adminUser = User.builder()
