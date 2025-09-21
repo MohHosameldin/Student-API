@@ -29,7 +29,10 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         .authorizeHttpRequests(auth -> auth
         .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
         .requestMatchers(HttpMethod.POST,"/api/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
-                .requestMatchers(HttpMethod.PUT,"/api/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
+        .requestMatchers(HttpMethod.GET,"/api/**").hasAnyRole(ApplicationUserRole.ADMIN.name(), ApplicationUserRole.ADMINTRAINEE.name())
+
+
+                .requestMatchers(HttpMethod.PUT,"/api/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.name())
 
             .requestMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())
 
