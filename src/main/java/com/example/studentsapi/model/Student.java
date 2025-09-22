@@ -42,13 +42,14 @@ public class Student {
     @NotBlank(message="Address is mandatory")
     @Column(nullable = false)
     private String address; 
-    @Pattern(
-        regexp = "^01[0-9]{9}$",
-        message = "Phone number must be 11 digits and start with 01"
+    
+@NotBlank(message="Phone number is mandatory")
+@Pattern(
+    regexp = "^01[0-9]{9}$",
+    message = "Phone number must be 11 digits and start with 01"
 )
-    @NotBlank(message="Phone number is mandatory")
-    @Column(nullable = false, unique = true)
-    private String phoneNumber; 
+@Column(nullable = false, unique = true)
+private String phoneNumber;
 
     @NotNull(message="Date of Birth is mandatory")
     @Column(nullable = false)
