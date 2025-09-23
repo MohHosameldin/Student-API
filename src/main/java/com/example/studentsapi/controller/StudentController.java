@@ -2,6 +2,7 @@ package com.example.studentsapi.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +36,7 @@ private final StudentService studentService;
         return studentService.getStudents();
     }
     @GetMapping(path = "{id}")
+
     public Student findbyid(@PathVariable("id") Long id) {
         return studentService.findbyid(id);
     }
