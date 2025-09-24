@@ -2,7 +2,6 @@ package com.example.studentsapi.controller;
 
 import java.util.List;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +15,7 @@ import com.example.studentsapi.model.Student;
 import com.example.studentsapi.service.StudentService;
 
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,10 +31,25 @@ private final StudentService studentService;
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
-    @GetMapping
-    public List <Student> getStudents(){
+  /* @GetMapping
+    public List <Student> getStudents(Authentication authentication) { // <-- Add the 'Authentication' parameter
+        
+        // --- TEMPORARY DEBUG CODE ---
+        System.out.println("==============================================");
+        System.out.println("USER LOGGED IN: " + authentication.getName());
+        System.out.println("USER AUTHORITIES: " + authentication.getAuthorities());
+        System.out.println("==============================================");
+        // --- END DEBUG CODE ---
+
         return studentService.getStudents();
-    }
+    }*/
+
+
+   @GetMapping
+    public List <Student> getStudents(){
+
+        return studentService.getStudents();
+    } 
     @GetMapping(path = "{id}")
 
     public Student findbyid(@PathVariable("id") Long id) {
@@ -50,7 +65,10 @@ public Student nationalIdSearch(@PathVariable("NationalID") String NationalID) {
 }
 @PostMapping
 public void registerStudent(@Valid @RequestBody Student student){
-studentService.addNewStudent(student);
+
+      
+        studentService.addNewStudent(student);
+
 
 }
 @DeleteMapping(path="{id}") 

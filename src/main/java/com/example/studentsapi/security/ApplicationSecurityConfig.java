@@ -14,6 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 @EnableWebSecurity
@@ -22,33 +26,34 @@ public class ApplicationSecurityConfig {
 
   
 @Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-        .csrf(csrf -> csrf
-            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-        )
-        .sessionManagement(session -> session
-            .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-        )
-        // Corrected and simplified authorization rules
-        .authorizeHttpRequests(auth -> auth
-            // RULE 1 (Write Access): Requires the specific STUDENT_WRITE permission.
-            .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
-            .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
-            .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            // Enable CSRF and configure the cookie repository
+            .csrf(csrf -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            )
+            // Ensure a session is created to store the token
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+            )
+            // Add your custom filter to force the CSRF cookie to be sent on every request
+            .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
+            // Your authorization rules
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
+                .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
+                .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
+                .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole(ApplicationUserRole.ADMIN.name(), ApplicationUserRole.ADMINTRAINEE.name(), ApplicationUserRole.STUDENT.name())
+                .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            // Use HTTP Basic Authentication
+            .httpBasic(Customizer.withDefaults());
             
-            // RULE 2 (Read Access): Allowed for any of our defined roles.
-            .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole(ApplicationUserRole.ADMIN.name(), ApplicationUserRole.ADMINTRAINEE.name(), ApplicationUserRole.STUDENT.name())
-            
-            // RULE 3: Public access for the homepage and static files.
-            .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
-            
-            // RULE 4 (Fallback): Any other request not matched above must be authenticated.
-            .anyRequest().authenticated()
-        )
-        .httpBasic(Customizer.withDefaults());
-    return http.build();
-}
+        return http.build();
+        
+    }
+    
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         UserDetails adminUser = User.builder()
@@ -70,4 +75,15 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         
         return new InMemoryUserDetailsManager(adminUser, studentUser,Tom);
     }
+
+
+    @Bean
+    public CsrfTokenRepository csrfTokenRepository() {
+        CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        repository.setCookieName("XSRF-TOKEN");
+        repository.setHeaderName("X-XSRF-TOKEN");
+        return repository;
+    }
+
+    
 }
