@@ -26,33 +26,28 @@ public class ApplicationSecurityConfig {
 
   
 @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            // Enable CSRF and configure the cookie repository
-            .csrf(csrf -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            )
-            // Ensure a session is created to store the token
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-            )
-            // Add your custom filter to force the CSRF cookie to be sent on every request
-            .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
-            // Your authorization rules
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
-                .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
-                .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
-                .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole(ApplicationUserRole.ADMIN.name(), ApplicationUserRole.ADMINTRAINEE.name(), ApplicationUserRole.STUDENT.name())
-                .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            // Use HTTP Basic Authentication
-            .httpBasic(Customizer.withDefaults());
-            
-        return http.build();
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        // 1. Disable CSRF protection
+        .csrf(csrf -> csrf.disable())
+
+        // 2. Set session management to STATELESS (no sessions or cookies will be created)
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+        // Your authorization rules remain the same
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
+            .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
+            .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
+            .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole(ApplicationUserRole.ADMIN.name(), ApplicationUserRole.ADMINTRAINEE.name(), ApplicationUserRole.STUDENT.name())
+            .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
+            .anyRequest().authenticated()
+        )
+        // Use HTTP Basic Authentication
+        .httpBasic(Customizer.withDefaults());
         
-    }
+    return http.build();
+}
     
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
