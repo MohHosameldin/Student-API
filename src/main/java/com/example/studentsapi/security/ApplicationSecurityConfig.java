@@ -28,13 +28,8 @@ public class ApplicationSecurityConfig {
 @Bean
 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-        // 1. Disable CSRF protection
-        .csrf(csrf -> csrf.disable())
+      
 
-        // 2. Set session management to STATELESS (no sessions or cookies will be created)
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-        // Your authorization rules remain the same
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
             .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
@@ -43,8 +38,14 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
             .anyRequest().authenticated()
         )
-        // Use HTTP Basic Authentication
-        .httpBasic(Customizer.withDefaults());
+        .formLogin(form -> form
+            .loginPage("/login").permitAll() 
+        )
+        .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login?logout") 
+            .permitAll()
+        );
         
     return http.build();
 }

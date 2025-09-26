@@ -71,6 +71,12 @@ public void registerStudent(@Valid @RequestBody Student student){
 
 
 }
+    @GetMapping("/login")
+    public String getLoginView() {
+        return "login"; // This returns the login.html template
+    }
+
+
 @DeleteMapping(path="{id}") 
 public void deleteStudent(@PathVariable("id") Long id){
     studentService.deleteStudent(id);
@@ -85,5 +91,6 @@ public void updateStudent(@PathVariable("id")Long id ,
   @RequestParam(required = false) String PhoneNumber){
 studentService.updateStudent(id, firstName, secondName, email, Address, PhoneNumber);
 }
+
 
 }
