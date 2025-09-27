@@ -111,6 +111,21 @@
             box-shadow: 0 0 10px rgba(212, 0, 0, 0.5);
         }
         
+        /* --- NEW STYLE FOR THE REMEMBER ME CHECKBOX --- */
+        .remember-me-group {
+            text-align: left;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+        
+        .remember-me-group input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: var(--ferrari-red); /* Style the checkbox color */
+        }
+        
         .form-button {
             padding: 15px;
             border: none;
@@ -137,11 +152,9 @@
         <h2>System Authentication</h2>
         <p class="subtitle">Please provide credentials to access the database</p>
 
-        <!-- Display error message if login fails -->
         <div th:if="${param.error}" class="message error">
             Access Denied. Invalid credentials.
         </div>
-        <!-- Display message on successful logout -->
         <div th:if="${param.logout}" class="message logout">
             You have been successfully logged out.
         </div>
@@ -153,7 +166,12 @@
             <div class="form-group">
                 <input class="form-input" type="password" id="password" name="password" placeholder="Password" required>
             </div>
-            <!-- Thymeleaf automatically includes the CSRF token in the form -->
+            
+            <div class="remember-me-group">
+                <input type="checkbox" id="remember-me" name="remember-me">
+                <label for="remember-me">Keep me logged in</label>
+            </div>
+            
             <button class="form-button" type="submit">Access System</button>
         </form>
     </div>
