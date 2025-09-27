@@ -21,30 +21,33 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity //this is for the @preauth
+@EnableMethodSecurity 
 public class ApplicationSecurityConfig {
 
   
 @Bean
 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-      
-
+        // CSRF must be enabled for Form Login to be secure
+        .csrf(csrf -> csrf
+            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        )
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
+            
             .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
             .requestMatchers(HttpMethod.PUT, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
             .requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(ApplicationUserPermission.STUDENT_WRITE.getPermission())
             .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole(ApplicationUserRole.ADMIN.name(), ApplicationUserRole.ADMINTRAINEE.name(), ApplicationUserRole.STUDENT.name())
-            .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
             .anyRequest().authenticated()
         )
         .formLogin(form -> form
-            .loginPage("/login").permitAll() 
+            .loginPage("/login") 
+            .defaultSuccessUrl("/dashboard.html", true) 
+            .permitAll() 
         )
         .logout(logout -> logout
-            .logoutUrl("/logout")
-            .logoutSuccessUrl("/login?logout") 
-            .permitAll()
+            .logoutSuccessUrl("/")
         );
         
     return http.build();

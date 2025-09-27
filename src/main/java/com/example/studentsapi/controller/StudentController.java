@@ -15,7 +15,6 @@ import com.example.studentsapi.model.Student;
 import com.example.studentsapi.service.StudentService;
 
 import jakarta.validation.Valid;
-import org.springframework.security.core.Authentication;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -71,12 +70,12 @@ public void registerStudent(@Valid @RequestBody Student student){
 
 
 }
-    @GetMapping("/login")
+    /*  @GetMapping("/login")
     public String getLoginView() {
-        return "login"; // This returns the login.html template
+        return "login"; 
     }
 
-
+ */
 @DeleteMapping(path="{id}") 
 public void deleteStudent(@PathVariable("id") Long id){
     studentService.deleteStudent(id);

@@ -2,41 +2,161 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Access // Student Database</title>
     <style>
-        /* Add some basic styling */
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4; }
-        .login-container { padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        input { display: block; margin-bottom: 10px; padding: 8px; width: 200px; }
-        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&display.swap');
+
+        :root {
+            --ferrari-red: #D40000;
+            --carbon-bg: #1a1a1a;
+            --surface-color: #262626;
+            --text-color: #f5f5f5;
+            --error-color: #ff8a80;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--carbon-bg);
+            background-image: 
+                linear-gradient(45deg, #222 25%, transparent 25%), 
+                linear-gradient(-45deg, #222 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #222 75%),
+                linear-gradient(-45deg, transparent 75%, #222 75%);
+            background-size: 20px 20px;
+            color: var(--text-color);
+        }
+
+        .login-card {
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid #444;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            fill: var(--ferrari-red);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--ferrari-red);
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            margin-bottom: 2rem;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+        }
+
+        .message.error {
+            background-color: rgba(212, 0, 0, 0.1);
+            color: var(--error-color);
+            border-color: var(--ferrari-red);
+        }
+        
+        .message.logout {
+            background-color: rgba(0, 212, 80, 0.1);
+            color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: var(--carbon-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--ferrari-red);
+            box-shadow: 0 0 10px rgba(212, 0, 0, 0.5);
+        }
+        
+        .form-button {
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--ferrari-red);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-button:hover {
+            box-shadow: 0 0 20px rgba(212, 0, 0, 0.8);
+            transform: translateY(-2px);
+        }
+
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Please Log In</h2>
-        
+    <div class="login-card">
+        <svg class="logo" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"></path></svg>
+        <h2>System Authentication</h2>
+        <p class="subtitle">Please provide credentials to access the database</p>
+
         <!-- Display error message if login fails -->
-        <div th:if="${param.error}" style="color: red;">
-            Invalid username or password.
+        <div th:if="${param.error}" class="message error">
+            Access Denied. Invalid credentials.
         </div>
         <!-- Display message on successful logout -->
-        <div th:if="${param.logout}" style="color: green;">
-            You have been logged out.
+        <div th:if="${param.logout}" class="message logout">
+            You have been successfully logged out.
         </div>
 
-        <!-- The form MUST post to /login -->
-        <form th:action="@{/login}" method="post">
-            <div>
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required autofocus>
+        <form class="login-form" th:action="@{/login}" method="post">
+            <div class="form-group">
+                <input class="form-input" type="text" id="username" name="username" placeholder="Username" required autofocus>
             </div>
-            <div>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+            <div class="form-group">
+                <input class="form-input" type="password" id="password" name="password" placeholder="Password" required>
             </div>
-            <!-- The CSRF token is automatically included by Thymeleaf -->
-            <button type of="submit">Sign In</button>
+            <!-- Thymeleaf automatically includes the CSRF token in the form -->
+            <button class="form-button" type="submit">Access System</button>
         </form>
     </div>
 </body>
 </html>
+

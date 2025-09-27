@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Student Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&display=swap');
+
+        :root {
+            --ferrari-red: #D40000;
+            --carbon-bg: #1a1a1a;
+            --surface-color: #262626;
+            --text-color: #f5f5f5;
+            --accent-yellow: #FFD700;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background-color: var(--carbon-bg);
+            background-image: 
+                linear-gradient(45deg, #222 25%, transparent 25%), 
+                linear-gradient(-45deg, #222 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #222 75%),
+                linear-gradient(-45deg, transparent 75%, #222 75%);
+            background-size: 20px 20px;
+            color: var(--text-color);
+            margin: 0;
+            padding: 25px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--ferrari-red);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-title svg {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            fill: var(--ferrari-red);
+        }
+
+        .header h1 {
+            color: var(--text-color);
+            margin: 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 2px solid var(--ferrari-red);
+            background-color: transparent;
+            color: var(--ferrari-red);
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--ferrari-red);
+            color: white;
+            box-shadow: 0 0 15px rgba(212, 0, 0, 0.7);
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+
+        h2 {
+            color: var(--ferrari-red);
+            padding-bottom: 10px;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        th {
+            background-color: var(--ferrari-red);
+            color: white;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8em;
+        }
+
+        .form-group input {
+            width: calc(100% - 22px);
+            padding: 12px 10px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background-color: var(--carbon-bg);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--ferrari-red);
+            box-shadow: 0 0 10px rgba(212, 0, 0, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: none;
+            background-color: var(--ferrari-red);
+            color: white;
+            font-size: 1.1em;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 0 20px rgba(212, 0, 0, 0.8);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">
+            <svg viewBox="0 0 24 24"><path d="M16.5 9.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm-9 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-3-5.5c.83 0 1.5-.67 1.5-1.5H9v-2.5c0-.28.22-.5.5-.5s.5.22.5.5V11h4v-1.5c0-.28.22-.5.5-.5s.5.22.5.5V11h.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5z"></path></svg>
+            <h1>Student Data</h1>
+        </div>
+        <!-- THIS FORM IS NOW THE CORRECT WAY TO LOG OUT -->
+        <form th:action="@{/logout}" method="post">
+             <button type="submit" class="logout-btn">End Session</button>
+        </form>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="card">
+            <h2>Live Telemetry // All Students</h2>
+            <table id="student-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Register New Driver // Add Student</h2>
+            <form id="add-student-form">
+                <div class="form-group"><label for="firstName">First Name</label><input type="text" id="firstName" required></div>
+                <div class="form-group"><label for="lastName">Last Name</label><input type="text" id="lastName" required></div>
+                <div class="form-group"><label for="email">Email</label><input type="email" id="email" required></div>
+                <div class="form-group"><label for="address">Address</label><input type="text" id="address" required></div>
+                <div class="form-group"><label for="phoneNumber">Phone Number</label><input type="text" id="phoneNumber" required></div>
+                <div class="form-group"><label for="dateOfBirth">Date of Birth</label><input type="date" id="dateOfBirth" required></div>
+                <div class="form-group"><label for="nationalID">National ID</label><input type="text" id="nationalID" required></div>
+                <button type="submit" class="submit-btn">Register Student</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- THIS SCRIPT IS NOW CORRECT FOR FORM LOGIN ---
+        
+        // This function will run as soon as the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchStudents();
+        });
+
+        // Function to fetch all students and populate the table
+        function fetchStudents() {
+            // The browser will AUTOMATICALLY send the session cookie.
+            // We don't need to add any Authorization headers.
+            fetch('/api/v1/student')
+                .then(response => {
+                    if (!response.ok) { // If not logged in, the server will redirect, but we handle it just in case.
+                        window.location.href = '/login';
+                        return;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data) return;
+                    const tableBody = document.querySelector("#student-table tbody");
+                    tableBody.innerHTML = ''; // Clear existing rows
+                    data.forEach(student => {
+                        const row = `<tr>
+                            <td>${student.id}</td>
+                            <td>${student.firstName}</td>
+                            <td>${student.lastName}</td>
+                            <td>${student.email}</td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => console.error('Error fetching students:', error));
+        }
+
+        // Event listener for the "Add Student" form
+        document.getElementById('add-student-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // We need to get the CSRF token to send with our POST request.
+            // Spring Security sends it in a cookie named 'XSRF-TOKEN'.
+            const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
+            const studentData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                nationalID: document.getElementById('nationalID').value
+            };
+
+            fetch('/api/v1/student', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': csrfToken // Include the CSRF token in the header
+                },
+                body: JSON.stringify(studentData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Student added successfully!');
+                    document.getElementById('add-student-form').reset();
+                    fetchStudents(); // Refresh the student list
+                } else {
+                    alert('Failed to add student. Please check the data.');
+                }
+            })
+            .catch(error => console.error('Error adding student:', error));
+        });
+    </script>
+</body>
+</html>
