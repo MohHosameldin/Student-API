@@ -1,5 +1,7 @@
 package com.example.studentsapi.security;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,7 +30,6 @@ public class ApplicationSecurityConfig {
 @Bean
 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-        // CSRF must be enabled for Form Login to be secure
         .csrf(csrf -> csrf
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
         )
@@ -46,8 +47,16 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             .defaultSuccessUrl("/dashboard.html", true) 
             .permitAll() 
         )
+            .rememberMe(rememberMe -> rememberMe
+            .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21)) 
+            .key("somethingverysecured") 
+            .rememberMeParameter("remember-me") 
+        )
         .logout(logout -> logout
             .logoutSuccessUrl("/")
+            .invalidateHttpSession(true)
+            .clearAuthentication(true) 
+            .deleteCookies("JSESSIONID", "XSRF-TOKEN", "remember-me")           
         );
         
     return http.build();
