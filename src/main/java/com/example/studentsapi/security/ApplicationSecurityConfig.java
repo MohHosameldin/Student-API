@@ -5,22 +5,13 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.config.http.SessionCreationPolicy;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity 
@@ -62,27 +53,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
     return http.build();
 }
     
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails adminUser = User.builder()
-                .username("linda")
-                .password(passwordEncoder.encode("password123"))
-                .authorities(ApplicationUserRole.ADMIN.getGrantedAuthorities())
-                .build();
 
-        UserDetails studentUser = User.builder()
-                .username("annasmith")
-                .password(passwordEncoder.encode("password123"))
-                .authorities(ApplicationUserRole.STUDENT.getGrantedAuthorities())
-                .build();
-                UserDetails Tom = User.builder()
-                .username("Tom")
-                .password(passwordEncoder.encode("password123"))
-                .authorities(ApplicationUserRole.ADMINTRAINEE.getGrantedAuthorities())
-                .build();
-        
-        return new InMemoryUserDetailsManager(adminUser, studentUser,Tom);
-    }
 
 
     @Bean
